@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "37477127222",
+    "project_id": "messenger-f591b",
+    "storage_bucket": "messenger-f591b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:37477127222:android:b9b8b385e5101d401f3497",
+        "android_client_info": {
+          "package_name": "com.zeedxdevs.securemessenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "37477127222-tgc1m9n9e5m5jla493ijjokedsmtm3e5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zeedxdevs.securemessenger",
+            "certificate_hash": "47fffe8b60b5d2b224782a62746d7fe78d0dbab0"
+          }
+        },
+        {
+          "client_id": "37477127222-3an5nvhm0bi0lnm37564lrb2r46qpl2n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDByd35UqDXqlVdVmeKp5FKo3IBbi29khc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "37477127222-3an5nvhm0bi0lnm37564lrb2r46qpl2n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
