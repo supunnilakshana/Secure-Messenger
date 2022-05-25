@@ -18,6 +18,8 @@ class ThemeClass {
       textTheme: GoogleFonts.balsamiqSansTextTheme(TextTheme(
           bodyText1: TextStyle(color: kdefualtfontcolor.withOpacity(0.9)))),
       appBarTheme: AppBarTheme(
+        textTheme: GoogleFonts.balsamiqSansTextTheme(TextTheme(
+            bodyText1: TextStyle(color: kdefualtfontcolor.withOpacity(0.9)))),
         backgroundColor: Colors.black,
       ));
 }

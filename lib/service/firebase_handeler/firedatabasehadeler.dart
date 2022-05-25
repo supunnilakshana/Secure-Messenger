@@ -12,7 +12,7 @@ class FireDBhandeler {
   static final user = FirebaseAuth.instance.currentUser;
   static String mainUserpath = "/users/" + user!.email.toString() + "/";
   static final String rqinboxpath = "rqinbox";
-  static final String sentpath = "rqsentbox";
+  static final String rqsentpath = "rqsentbox";
   static final String firendboxtpath = "friendbox";
   static final String inkeyboxpath = "inkeybox";
   static final String sentkeyboxpath = "sentkeybox";
@@ -41,7 +41,7 @@ class FireDBhandeler {
     if (status == 1) {
       firestoreInstance
           .collection(senduserpath)
-          .doc(gmodel.id)
+          .doc(gmodel.email)
           .set(gmodel.toMap())
           .then((_) {
         print("create  doc");
@@ -53,11 +53,11 @@ class FireDBhandeler {
   }
 
   static Future<int> saveFriendRq(FrqModel gmodel) async {
-    int status = await checkdocstatus(mainUserpath + sentpath, gmodel.email);
+    int status = await checkdocstatus(mainUserpath + rqsentpath, gmodel.email);
     if (status == 1) {
       firestoreInstance
-          .collection(mainUserpath + sentpath)
-          .doc(gmodel.id)
+          .collection(mainUserpath + rqsentpath)
+          .doc(gmodel.email)
           .set(gmodel.toMap())
           .then((_) {
         print("create  doc");
@@ -70,10 +70,11 @@ class FireDBhandeler {
 
   static Future<int> addFriendRq(FrqModel gmodel) async {
     //us
-    int status = await checkdocstatus(mainUserpath + sentpath, gmodel.email);
+    int status =
+        await checkdocstatus(mainUserpath + firendboxtpath, gmodel.email);
     if (status == 1) {
       firestoreInstance
-          .collection(mainUserpath + sentpath)
+          .collection(mainUserpath + firendboxtpath)
           .doc(gmodel.email)
           .set(gmodel.toMap())
           .then((_) {
@@ -96,6 +97,8 @@ class FireDBhandeler {
     } else {
       print("already exsists");
     }
+    int res = await deletedoc(gmodel.email, mainUserpath + rqinboxpath);
+
     return status;
   }
 
@@ -155,7 +158,7 @@ class FireDBhandeler {
     List<FrqModel> glist = [];
     FrqModel gmodel;
     QuerySnapshot querySnapshot =
-        await firestoreInstance.collection(mainUserpath + sentpath).get();
+        await firestoreInstance.collection(mainUserpath + rqinboxpath).get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i];
 

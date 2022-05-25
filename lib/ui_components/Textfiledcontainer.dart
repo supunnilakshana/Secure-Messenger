@@ -12,7 +12,7 @@ class Textfiledcontainer extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      width: size.width * 0.58,
+      width: size.width * 0.65,
       margin: EdgeInsets.symmetric(vertical: 10),
       padding: EdgeInsets.symmetric(
           horizontal: size.width * 0.03, vertical: size.height * 0.003),

@@ -4,6 +4,7 @@ import 'package:line_icons/line_icon.dart';
 import 'package:lottie/lottie.dart';
 import 'package:securemsg/constants_data/ui_constants.dart';
 import 'package:securemsg/service/firebase_handeler/firedatabasehadeler.dart';
+import 'package:securemsg/service/validater/date.dart';
 import 'package:securemsg/test/test1.dart';
 import 'package:securemsg/ui_components/tots.dart';
 
@@ -29,6 +30,16 @@ class _FriendReqlistState extends State<FriendReqlist> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: klightbackgoundcolor,
+      appBar: AppBar(
+        backgroundColor: klightbackgoundcolor,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          "Friend Requests",
+          style: TextStyle(fontSize: size.width * 0.06),
+        ),
+      ),
       body: Container(
         child: FutureBuilder(
           future: futureData,
@@ -37,13 +48,13 @@ class _FriendReqlistState extends State<FriendReqlist> {
               List<FrqModel> data = snapshot.data as List<FrqModel>;
               print(data);
 
-              if (data.isEmpty) {
+              if (data.isNotEmpty) {
                 return Container(
                     child: ListView.builder(
                         itemCount: data.length,
                         itemBuilder: (context, indext) {
                           return Card(
-                            color: Colors.white,
+                            color: kprimaryColordark,
                             child: ListTile(
                                 contentPadding: EdgeInsets.symmetric(
                                     horizontal: 20.0, vertical: 10.0),
@@ -57,10 +68,10 @@ class _FriendReqlistState extends State<FriendReqlist> {
                                         // ),
                                         )),
                                 title: Text(
-                                  data[indext].name,
+                                  data[indext].email,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                      color: Colors.black,
+                                      color: kdefualtfontcolor.withOpacity(0.9),
                                       fontWeight: FontWeight.bold,
                                       fontSize: size.width * 0.037),
                                 ),
@@ -84,19 +95,43 @@ class _FriendReqlistState extends State<FriendReqlist> {
                                   children: [
                                     IconButton(
                                       onPressed: () async {
+                                        int res =
+                                            await FireDBhandeler.addFriendRq(
+                                                FrqModel(
+                                                    status: 1,
+                                                    id: Date.getDateTimeId(),
+                                                    email: data[indext].email,
+                                                    name: data[indext].name,
+                                                    datetime:
+                                                        Date.getDatetimenow()));
+                                        if (res == 1) {
+                                          Customtost.commontost(
+                                              "Added", Colors.indigoAccent);
+                                        } else {
+                                          Customtost.commontost("Adding failed",
+                                              Colors.redAccent);
+                                        }
+
                                         reloaddata();
                                       },
                                       icon: Icon(Icons.check),
-                                      color: Colors.black.withOpacity(0.5),
-                                      iconSize: size.width * 0.07,
+                                      color: kdefualtfontcolor.withOpacity(0.9),
+                                      iconSize: size.width * 0.08,
                                     ),
                                     IconButton(
                                       onPressed: () async {
+                                        int res =
+                                            await FireDBhandeler.deletedoc(
+                                                data[indext].email,
+                                                FireDBhandeler.mainUserpath +
+                                                    FireDBhandeler.rqinboxpath);
+                                        Customtost.commontost(
+                                            "Deleted", Colors.redAccent);
                                         reloaddata();
                                       },
                                       icon: Icon(Icons.close),
-                                      color: Colors.black.withOpacity(0.5),
-                                      iconSize: size.width * 0.07,
+                                      color: kdefualtfontcolor.withOpacity(0.7),
+                                      iconSize: size.width * 0.08,
                                     )
                                   ],
                                 )),
@@ -122,8 +157,9 @@ class _FriendReqlistState extends State<FriendReqlist> {
                         ),
                       ),
                       Container(
-                        child: Lottie.asset("assets/animation/emptycart.json",
-                            width: size.width * 0.6),
+                        child: Lottie.asset(
+                            "assets/animation/sadfacewhite.json",
+                            width: size.width * 0.8),
                       )
                     ],
                   ),
@@ -134,7 +170,7 @@ class _FriendReqlistState extends State<FriendReqlist> {
             }
             // By default show a loading spinner.
             return Center(
-                child: Lottie.asset("assets/animation/loading4.json",
+                child: Lottie.asset("assets/animation/loadingwhitec.json",
                     width: size.height * 0.12));
           },
         ),

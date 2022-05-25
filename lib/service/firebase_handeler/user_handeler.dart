@@ -112,7 +112,9 @@ class UserdbHandeler {
       users = value.data()!["user_list"];
 
       users.forEach((element) {
-        userlist.add(element.toString());
+        if (element != user!.email!.toString()) {
+          userlist.add(element.toString());
+        }
       });
 
       filterlist = userlist

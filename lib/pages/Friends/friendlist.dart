@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:lottie/lottie.dart';
 import 'package:securemsg/constants_data/ui_constants.dart';
+import 'package:securemsg/pages/Chat/components/singel_chat.dart';
 import 'package:securemsg/service/firebase_handeler/firedatabasehadeler.dart';
 import 'package:securemsg/test/test1.dart';
 import 'package:securemsg/ui_components/tots.dart';
@@ -38,13 +39,15 @@ class _FriendlistState extends State<Friendlist> {
                 List<FrqModel> data = snapshot.data as List<FrqModel>;
                 print(data);
 
-                if (data.isEmpty) {
+                if (data.isNotEmpty) {
                   return Container(
                       child: ListView.builder(
                           itemCount: data.length,
+                          shrinkWrap: true,
                           itemBuilder: (context, indext) {
+                            print(data[indext].name);
                             return Card(
-                              color: Colors.white,
+                              color: kprimaryColordark,
                               child: ListTile(
                                   contentPadding: EdgeInsets.symmetric(
                                       horizontal: 20.0, vertical: 10.0),
@@ -61,18 +64,14 @@ class _FriendlistState extends State<Friendlist> {
                                     data[indext].name,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                        color: Colors.black,
+                                        color: kdefualtfontcolor,
                                         fontWeight: FontWeight.bold,
                                         fontSize: size.width * 0.037),
                                   ),
                                   subtitle: Row(children: [
                                     Icon(Icons.email_outlined),
-                                    Text(" " + data[indext].email,
-                                        style: TextStyle(
-                                            color: kdefualtfontcolor
-                                                .withOpacity(0.7))),
                                     Expanded(
-                                      child: Text(data[indext].email,
+                                      child: Text(" " + data[indext].email,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                               color: kdefualtfontcolor
@@ -84,20 +83,26 @@ class _FriendlistState extends State<Friendlist> {
                                     children: [
                                       IconButton(
                                         onPressed: () async {
-                                          reloaddata();
+                                          // reloaddata();
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SingelChatScreen()));
                                         },
-                                        icon: Icon(Icons.check),
-                                        color: Colors.black.withOpacity(0.5),
-                                        iconSize: size.width * 0.07,
+                                        icon: Icon(Icons.message_rounded),
+                                        color:
+                                            kdefualtfontcolor.withOpacity(0.8),
+                                        iconSize: size.width * 0.08,
                                       ),
-                                      IconButton(
-                                        onPressed: () async {
-                                          reloaddata();
-                                        },
-                                        icon: Icon(Icons.close),
-                                        color: Colors.black.withOpacity(0.5),
-                                        iconSize: size.width * 0.07,
-                                      )
+                                      // IconButton(
+                                      //   onPressed: () async {
+                                      //     reloaddata();
+                                      //   },
+                                      //   icon: Icon(Icons.close),
+                                      //   color: Colors.black.withOpacity(0.5),
+                                      //   iconSize: size.width * 0.07,
+                                      // )
                                     ],
                                   )),
                             );
@@ -121,7 +126,8 @@ class _FriendlistState extends State<Friendlist> {
                           ),
                         ),
                         Container(
-                          child: Lottie.asset("assets/animation/emptycart.json",
+                          child: Lottie.asset(
+                              "assets/animation/nofriendwhite.json",
                               width: size.width * 0.6),
                         )
                       ],
@@ -133,7 +139,7 @@ class _FriendlistState extends State<Friendlist> {
               }
               // By default show a loading spinner.
               return Center(
-                  child: Lottie.asset("assets/animation/loading4.json",
+                  child: Lottie.asset("assets/animation/loadingwhitec.json",
                       width: size.height * 0.12));
             },
           ),

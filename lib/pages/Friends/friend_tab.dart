@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:securemsg/constants_data/ui_constants.dart';
+import 'package:securemsg/pages/Friends/friendlist.dart';
+import 'package:securemsg/pages/Friends/friensreachres.dart';
 import 'package:securemsg/ui_components/roundedtextFiled.dart';
 
 class FirendTab extends StatefulWidget {
@@ -111,24 +113,19 @@ class _FirendTabState extends State<FirendTab> {
                               child: Text(
                                 "Search results...",
                                 style: TextStyle(
-                                    color: Colors.black.withOpacity(0.8),
+                                    color: kdefualtfontcolor.withOpacity(0.8),
                                     fontSize: size.width * 0.04,
                                     fontWeight: FontWeight.w700),
                               ),
                             ),
-                            // Sresultview(
-                            //   searchval: stext,
-                            // ),
+                            FirendSearchRes(svalue: stext)
                           ],
                         ))
                     : SizedBox(height: size.height * 0),
-
                 SizedBox(
                   height: size.height * 0.03,
                 ),
-                // Itemgridall(
-                //   scrollController: _scrollController,
-                // ),
+                Friendlist()
               ],
             ))
           ]),

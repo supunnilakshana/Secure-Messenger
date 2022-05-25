@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -5,11 +6,14 @@ import 'package:line_icons/line_icons.dart';
 
 import 'package:securemsg/constants_data/ui_constants.dart';
 import 'package:securemsg/pages/Chat/chat_tab.dart';
+import 'package:securemsg/pages/FriendReq/friendreq.dart';
 import 'package:securemsg/pages/Friends/friend_tab.dart';
 
 import 'package:securemsg/pages/sign_in_up/signin.dart';
 import 'package:securemsg/service/auth/google/GoogleSignAuth.dart';
 import 'package:securemsg/ui_components/popup_dilog.dart';
+
+import 'components/drawer.dart';
 
 class Homescreen extends StatefulWidget {
   final int index;
@@ -20,7 +24,7 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final user = FirebaseAuth.instance.currentUser;
 
   int _selectedIndex = 0;
@@ -50,43 +54,36 @@ class _HomescreenState extends State<Homescreen> {
         }
       },
       child: Scaffold(
+        key: _scaffoldKey,
+        drawer: MenuDrawer(),
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: klightbackgoundcolor,
           shadowColor: klightbackgoundcolor,
           elevation: 0,
-          leading: Icon(LineIcons.bars),
+          leading: GestureDetector(
+              onTap: () {
+                _scaffoldKey.currentState!.openDrawer();
+              },
+              child: Icon(
+                LineIcons.bars,
+                size: size.width * 0.1,
+              )),
           actions: [
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: IconButton(
-            //     onPressed: () {
-            //       PopupDialog.showPopupDilog(context, () async {
-            //         // await FirebaseAuth.instance.signOut();
-            //         GoogleSignInProvider googleSignInProvider =
-            //             GoogleSignInProvider();
-            //         await googleSignInProvider.logout();
-            //         Navigator.pushReplacement(context,
-            //             MaterialPageRoute(builder: (context) => Signin()));
-            //         print("logingout");
-            //       }, "Signout", "Do you want to signout ? ");
-            //     },
-            //     icon: Icon(
-            //       Icons.logout_outlined,
-            //       size: size.width * 0.08,
-            //     ),
-            //     color: Colors.black87,
-            //   ),
-            // ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  LineIcons.userFriends,
-                  color: kdefualtfontcolor,
-                  size: size.width * 0.1,
-                ),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => FriendReqlist()));
+                },
+                icon: Badge(
+                    badgeContent: Text(' '),
+                    child: Icon(
+                      LineIcons.userFriends,
+                      color: kdefualtfontcolor,
+                      size: size.width * 0.1,
+                    )),
               ),
             )
           ],
