@@ -99,7 +99,7 @@ class _FriendReqlistState extends State<FriendReqlist> {
                                             await FireDBhandeler.addFriendRq(
                                                 FrqModel(
                                                     status: 1,
-                                                    id: Date.getDateTimeId(),
+                                                    id: data[indext].id,
                                                     email: data[indext].email,
                                                     name: data[indext].name,
                                                     datetime:

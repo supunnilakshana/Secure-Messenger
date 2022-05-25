@@ -86,8 +86,8 @@ class _FirendSearchResState extends State<FirendSearchRes> {
                                             int res1 = await FireDBhandeler
                                                 .sendFriendRq(
                                                     FrqModel(
-                                                        id: Date
-                                                            .getDateTimeId(),
+                                                        id: FireDBhandeler
+                                                            .user!.uid,
                                                         email: FireDBhandeler
                                                             .user!.email!,
                                                         name: FireDBhandeler
@@ -98,7 +98,7 @@ class _FirendSearchResState extends State<FirendSearchRes> {
                                             int res2 = await FireDBhandeler
                                                 .saveFriendRq(
                                               FrqModel(
-                                                  id: Date.getDateTimeId(),
+                                                  id: FireDBhandeler.user!.uid,
                                                   email: FireDBhandeler
                                                       .user!.email!,
                                                   name: FireDBhandeler

@@ -27,9 +27,7 @@ class GoogleSignInProvider extends ChangeNotifier {
       await UserdbHandeler.adduser(
           _user!.email.toString(),
           Usermodel(
-              id: Date.getDateTimeId(),
-              email: _user!.email.toString(),
-              firends: []));
+              id: _user!.id, email: _user!.email.toString(), firends: []));
       notifyListeners();
     } on Exception catch (e) {
       print(e);

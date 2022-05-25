@@ -6,6 +6,7 @@ import 'package:securemsg/models/userModel.dart';
 import 'package:securemsg/pages/sign_in_up/authcheckingscreen.dart';
 import 'package:securemsg/service/auth/auth.dart';
 import 'package:securemsg/service/auth/emailverification.dart';
+import 'package:securemsg/service/firebase_handeler/firedatabasehadeler.dart';
 import 'package:securemsg/service/firebase_handeler/user_handeler.dart';
 import 'package:securemsg/service/validater/date.dart';
 import 'package:securemsg/service/validater/validate_handeler.dart';
@@ -157,7 +158,7 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
                                   await UserdbHandeler.adduser(
                                       widget.email,
                                       Usermodel(
-                                          id: Date.getDateTimeId(),
+                                          id: FireDBhandeler.user!.uid,
                                           email: widget.email,
                                           firends: []));
                                   // await UserdbHandeler.updateuserlist(

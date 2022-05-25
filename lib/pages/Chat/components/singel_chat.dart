@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icon.dart';
+import 'package:lottie/lottie.dart';
 import 'package:securemsg/constants_data/ui_constants.dart';
+import 'package:securemsg/models/msgModel.dart';
 import 'package:securemsg/service/firebase_handeler/firedatabasehadeler.dart';
+import 'package:securemsg/service/validater/date.dart';
 import 'package:securemsg/test/test1.dart';
 import 'package:securemsg/ui_components/popup_dilog.dart';
 import 'package:securemsg/ui_components/roundedtextFiled.dart';
@@ -12,16 +16,22 @@ import 'package:securemsg/ui_components/tots.dart';
 
 class SingelChatScreen extends StatefulWidget {
   final bool isnew;
+  final String email;
+  final String rid;
 
   const SingelChatScreen({
     Key? key,
     this.isnew = true,
+    required this.email,
+    required this.rid,
   }) : super(key: key);
   @override
   _SingelChatScreenState createState() => _SingelChatScreenState();
 }
 
 class _SingelChatScreenState extends State<SingelChatScreen> {
+  // final dbRef = FirebaseDatabase.instance.ref(
+  //     "users/" + FireDBhandeler.user!.uid + "/" + "chatbox" + "/" + widget.rid);
   bool isfirsttap = true;
   String sends = "f";
   String mobileNo = "";
@@ -37,6 +47,8 @@ class _SingelChatScreenState extends State<SingelChatScreen> {
     futureData = FireDBhandeler.getFriends();
     super.initState();
   }
+
+  List<MsgModel> msgList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -124,127 +136,171 @@ class _SingelChatScreenState extends State<SingelChatScreen> {
                       ? SizedBox(
                           height: 0,
                         )
-                      : FutureBuilder(
-                          future: futureData,
+                      : StreamBuilder(
+                          stream: FirebaseDatabase.instance
+                              .ref("users/" +
+                                  FireDBhandeler.user!.uid +
+                                  "/" +
+                                  "chatbox" +
+                                  "/" +
+                                  widget.rid)
+                              .onValue,
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               // List<MsgModel> data =
                               //     snapshot.data as List<MsgModel>;
                               // print(data.length);
-                              return ListView.builder(
-                                  keyboardDismissBehavior:
-                                      ScrollViewKeyboardDismissBehavior.onDrag,
-                                  itemCount: 5,
-                                  itemBuilder: (context, indext) {
-                                    // String resultmsg = _cryptoSMS
-                                    //     .decryptText(data[indext].message);
-                                    Random r = Random();
-                                    int res = r.nextInt(2);
-                                    if (res == 1) {
-                                      return Card(
-                                        color: klightbackgoundcolor,
-                                        elevation: 0,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                              left: size.width * 0.1,
-                                              right: size.width * 0.05),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                    color: kprimaryColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            28)),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(10),
-                                                  child: Text(
-                                                    "resultmsg",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 100,
-                                                    style: TextStyle(
-                                                      color: kdefualtfontcolor,
-                                                      fontSize:
-                                                          size.width * 0.04,
+                              final myMessages = Map<dynamic, dynamic>.from(
+                                  (snapshot.data! as DatabaseEvent)
+                                      .snapshot
+                                      .value as Map<dynamic, dynamic>);
+                              // DataSnapshot dataValues = snapshot.data;
+                              // List<Map<dynamic, dynamic>> values =
+                              //     snapshot.data as List<Map<dynamic, dynamic>>;
+                              // print(myMessages);
+                              myMessages.forEach((key, value) {
+                                // print(value);
+                                Map<dynamic, dynamic> map =
+                                    value as Map<dynamic, dynamic>;
+                                msgList.add(MsgModel.fromMap(map));
+                                msgList.sort((a, b) =>
+                                    b.datetimeid.compareTo(a.datetimeid));
+                              });
+                              if (msgList.isNotEmpty) {
+                                return ListView.builder(
+                                    keyboardDismissBehavior:
+                                        ScrollViewKeyboardDismissBehavior
+                                            .onDrag,
+                                    itemCount: 5,
+                                    itemBuilder: (context, indext) {
+                                      // String resultmsg = _cryptoSMS
+                                      //     .decryptText(data[indext].message);
+
+                                      if (msgList[indext].sendemail ==
+                                          FireDBhandeler.user!.email!) {
+                                        return Card(
+                                          color: klightbackgoundcolor,
+                                          elevation: 0,
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                left: size.width * 0.1,
+                                                right: size.width * 0.05),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                      color: kprimaryColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              28)),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    child: Text(
+                                                      msgList[indext].message,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 100,
+                                                      style: TextStyle(
+                                                        color:
+                                                            kdefualtfontcolor,
+                                                        fontSize:
+                                                            size.width * 0.04,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                  height: size.height * 0.005),
-                                              Text(
-                                                " data[indext].datetime",
-                                                style: TextStyle(
-                                                  color: kdefualtfontcolor
-                                                      .withOpacity(0.75),
-                                                  fontSize: size.width * 0.025,
-                                                ),
-                                              )
-                                            ],
+                                                SizedBox(
+                                                    height:
+                                                        size.height * 0.005),
+                                                Text(
+                                                  msgList[indext].datetime,
+                                                  style: TextStyle(
+                                                    color: kdefualtfontcolor
+                                                        .withOpacity(0.75),
+                                                    fontSize:
+                                                        size.width * 0.025,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    } else {
-                                      return Card(
-                                        color: klightbackgoundcolor,
-                                        elevation: 0,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                              left: size.width * 0.05,
-                                              right: size.width * 0.1),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                    color: kprimaryColordark,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            28)),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(10),
-                                                  child: Text(
-                                                    "resultmsg",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 100,
-                                                    style: TextStyle(
-                                                      color: kdefualtfontcolor
-                                                          .withOpacity(0.9),
-                                                      fontSize:
-                                                          size.width * 0.04,
+                                        );
+                                      } else {
+                                        return Card(
+                                          color: klightbackgoundcolor,
+                                          elevation: 0,
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                left: size.width * 0.05,
+                                                right: size.width * 0.1),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                      color: kprimaryColordark,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              28)),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    child: Text(
+                                                      msgList[indext].message,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 100,
+                                                      style: TextStyle(
+                                                        color: kdefualtfontcolor
+                                                            .withOpacity(0.9),
+                                                        fontSize:
+                                                            size.width * 0.04,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                  height: size.height * 0.005),
-                                              Text(
-                                                " data[indext].datetime",
-                                                style: TextStyle(
-                                                  color: kdefualtfontcolor
-                                                      .withOpacity(0.75),
-                                                  fontSize: size.width * 0.025,
-                                                ),
-                                              )
-                                            ],
+                                                SizedBox(
+                                                    height:
+                                                        size.height * 0.005),
+                                                Text(
+                                                  msgList[indext].datetime,
+                                                  style: TextStyle(
+                                                    color: kdefualtfontcolor
+                                                        .withOpacity(0.75),
+                                                    fontSize:
+                                                        size.width * 0.025,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    }
-                                  });
+                                        );
+                                      }
+                                    });
+                              } else {
+                                return Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      child: Text("Start a new chat"),
+                                    ),
+                                  ),
+                                );
+                              }
                             } else if (snapshot.hasError) {
                               return Text("${snapshot.error}");
                             }
                             // By default show a loading spinner.
                             return Center(
-                                child: CircularProgressIndicator.adaptive());
+                                child: Lottie.asset(
+                                    "assets/animation/loadingwhitec.json",
+                                    width: size.height * 0.08));
                           },
                         ),
                 )),
@@ -297,6 +353,22 @@ class _SingelChatScreenState extends State<SingelChatScreen> {
                               size: size.width * 0.1,
                             ),
                             onPressed: () async {
+                              print("pressed");
+                              if (messegecon.text.isNotEmpty) {
+                                await FireDBhandeler.sendMsgs(MsgModel(
+                                    id: FireDBhandeler.user!.uid +
+                                        Date.getDateTimeId(),
+                                    sendemail: FireDBhandeler.user!.email!,
+                                    reciveemail: widget.email,
+                                    message: messegecon.text,
+                                    msgtype: "text",
+                                    datetime: Date.getDatetimenow(),
+                                    datetimeid: Date.getDateTimeId(),
+                                    sendid: FireDBhandeler.user!.uid,
+                                    reciveid: widget.rid));
+                                print("done");
+                                messegecon.clear();
+                              }
                               if (_formKey.currentState!.validate()) {}
                             },
                           ),

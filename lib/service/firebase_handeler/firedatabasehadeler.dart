@@ -1,13 +1,17 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:securemsg/models/keymodel.dart';
+import 'package:securemsg/models/msgModel.dart';
 import 'package:securemsg/models/videomodel.dart';
+import 'package:securemsg/service/validater/date.dart';
 import 'package:securemsg/test/test1.dart';
 
 class FireDBhandeler {
   static final firestoreInstance = FirebaseFirestore.instance;
-  static final DatabaseReference dbRef = FirebaseDatabase.instance.ref("count");
+  static final DatabaseReference dbRef = FirebaseDatabase.instance.ref();
 
   static final user = FirebaseAuth.instance.currentUser;
   static String mainUserpath = "/users/" + user!.email.toString() + "/";
@@ -16,6 +20,7 @@ class FireDBhandeler {
   static final String firendboxtpath = "friendbox";
   static final String inkeyboxpath = "inkeybox";
   static final String sentkeyboxpath = "sentkeybox";
+  static final String chatboxpath = "chatbox";
 
   //check doc is exists
   static Future<int> checkdocstatus(String collectionpath, String docid) async {
@@ -84,13 +89,18 @@ class FireDBhandeler {
       print("already exsists");
     }
     //friend
+    final senduser = FrqModel(
+        id: gmodel.id,
+        email: user!.email!,
+        name: user!.displayName!,
+        datetime: gmodel.datetime);
     status = await checkdocstatus(
         "/users/" + gmodel.email + "/" + firendboxtpath, gmodel.email);
     if (status == 1) {
       firestoreInstance
           .collection("/users/" + gmodel.email + "/" + firendboxtpath)
-          .doc(gmodel.email)
-          .set(gmodel.toMap())
+          .doc(senduser.email)
+          .set(senduser.toMap())
           .then((_) {
         print("create  doc");
       });
@@ -203,6 +213,51 @@ class FireDBhandeler {
     await dbRef.update({
       key: value,
     });
+  }
+
+//realtimedb
+  static Future<int> checkfiledstatus(String collectionpath, String id) async {
+    final snapshot = await dbRef.child('$collectionpath/$id').get();
+    if (snapshot.exists) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+
+//ad
+  static Future<int> sendMsgs(MsgModel msgModel) async {
+    int res = 0;
+    try {
+      DatabaseReference ref;
+      //sender
+      ref = FirebaseDatabase.instance.ref("users/" +
+          user!.uid +
+          "/" +
+          chatboxpath +
+          "/" +
+          msgModel.reciveid +
+          "/" +
+          msgModel.id);
+//reciver
+      await ref.set(msgModel.toMap());
+      print("addedsenserm");
+      ref = FirebaseDatabase.instance.ref("users/" +
+          msgModel.reciveid +
+          "/" +
+          chatboxpath +
+          "/" +
+          msgModel.sendid +
+          "/" +
+          msgModel.id);
+
+      await ref.set(msgModel.toMap());
+      print("addedreceverm");
+      res = 1;
+    } on Exception catch (e) {
+      print(e);
+    }
+    return res;
   }
 
   //delete document

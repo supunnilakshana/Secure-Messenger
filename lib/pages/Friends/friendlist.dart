@@ -88,7 +88,12 @@ class _FriendlistState extends State<Friendlist> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      SingelChatScreen()));
+                                                      SingelChatScreen(
+                                                        rid: data[indext].id,
+                                                        email:
+                                                            data[indext].email,
+                                                      )));
+                                          print(data[indext].id);
                                         },
                                         icon: Icon(Icons.message_rounded),
                                         color:
