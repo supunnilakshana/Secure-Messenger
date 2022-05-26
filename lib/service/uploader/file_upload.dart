@@ -12,7 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:path_provider/path_provider.dart';
 
-class ImageUploader {
+class FileUploader {
   static firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
 
@@ -25,7 +25,7 @@ class ImageUploader {
     String downloadedData = "false";
     firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
         .ref(collection + '/' + videoname);
-
+    print("---------------------------------------");
     try {
       await ref.putFile(data);
       print("uploaded");

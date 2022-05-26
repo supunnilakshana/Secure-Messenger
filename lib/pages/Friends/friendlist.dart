@@ -158,7 +158,7 @@ class _FriendlistState extends State<Friendlist> {
               // By default show a loading spinner.
               return Center(
                   child: Lottie.asset("assets/animation/loadingwhitec.json",
-                      width: size.height * 0.12));
+                      width: size.height * 0.8));
             },
           ),
         ],

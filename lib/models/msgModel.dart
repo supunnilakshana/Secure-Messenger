@@ -7,19 +7,20 @@ class MsgModel {
   final String sendid;
   final String reciveid;
   final String datetime;
+  final String fname;
   final String datetimeid;
 
-  MsgModel({
-    required this.id,
-    required this.sendemail,
-    required this.reciveemail,
-    required this.message,
-    required this.sendid,
-    required this.reciveid,
-    required this.datetimeid,
-    required this.msgtype,
-    required this.datetime,
-  });
+  MsgModel(
+      {required this.id,
+      required this.sendemail,
+      required this.reciveemail,
+      required this.message,
+      required this.sendid,
+      required this.reciveid,
+      required this.datetimeid,
+      required this.msgtype,
+      required this.datetime,
+      this.fname = ""});
 
   Map<String, dynamic> toMap() {
     return {
@@ -31,6 +32,7 @@ class MsgModel {
       'reciveid': reciveid,
       'datetimeid': datetimeid,
       'msgtype': msgtype,
+      'fname': fname,
       'datetime': datetime
     };
   }
@@ -44,5 +46,6 @@ class MsgModel {
         reciveid = res["reciveid"],
         datetimeid = res["datetimeid"],
         msgtype = res["msgtype"],
+        fname = res["fname"] ?? "",
         datetime = res["datetime"];
 }
