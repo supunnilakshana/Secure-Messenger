@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,7 +9,7 @@ import 'package:securemsg/models/keymodel.dart';
 import 'package:securemsg/models/msgModel.dart';
 import 'package:securemsg/models/videomodel.dart';
 import 'package:securemsg/service/validater/date.dart';
-import 'package:securemsg/test/test1.dart';
+import 'package:securemsg/models/FrqModel.dart';
 
 class FireDBhandeler {
   static final firestoreInstance = FirebaseFirestore.instance;
@@ -306,6 +307,41 @@ class FireDBhandeler {
       print(e);
     }
     return res;
+  }
+
+  static Future<Keymodel> getKey(MsgModel msgModel) async {
+    Keymodel keymodel;
+    String pathid;
+    if (msgModel.sendid == user!.uid) {
+      pathid = msgModel.reciveid;
+    } else {
+      pathid = msgModel.sendid;
+    }
+    final ref = FirebaseDatabase.instance.ref();
+    final path = "users/" +
+        user!.uid +
+        "/" +
+        keyboxpath +
+        "/" +
+        pathid +
+        "/" +
+        msgModel.id;
+    final snapshot = await ref.child(path).get();
+    print(path);
+    if (snapshot.exists) {
+      print(snapshot.value.toString() + "----------------");
+
+      keymodel = Keymodel.fromMap(snapshot.value as Map<dynamic, dynamic>);
+      print(keymodel.key);
+      return keymodel;
+    } else {
+      print("not exit");
+      return (Keymodel(
+          id: "false",
+          key: "key",
+          addeddate: "addeddate",
+          extesion: "extesion"));
+    }
   }
 
   //delete document

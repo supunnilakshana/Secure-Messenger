@@ -8,10 +8,11 @@ import 'package:lottie/lottie.dart';
 import 'package:securemsg/constants_data/ui_constants.dart';
 import 'package:securemsg/models/keymodel.dart';
 import 'package:securemsg/models/msgModel.dart';
+import 'package:securemsg/pages/Chat/components/singelMsg.dart';
 import 'package:securemsg/service/encryption/message_encrypt.dart';
 import 'package:securemsg/service/firebase_handeler/firedatabasehadeler.dart';
 import 'package:securemsg/service/validater/date.dart';
-import 'package:securemsg/test/test1.dart';
+import 'package:securemsg/models/FrqModel.dart';
 import 'package:securemsg/ui_components/popup_dilog.dart';
 import 'package:securemsg/ui_components/roundedtextFiled.dart';
 import 'package:securemsg/ui_components/tots.dart';
@@ -119,7 +120,7 @@ class _SingelChatScreenState extends State<SingelChatScreen> {
                   right: size.width * 0.06,
                 ),
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     // PopupDialog.showPopupdelete(
                     //     context, "Are you sure to delete this chat",
                     //     () async {
@@ -214,111 +215,16 @@ class _SingelChatScreenState extends State<SingelChatScreen> {
                                       itemBuilder: (context, indext) {
                                         if (msgList[indext].sendemail ==
                                             FireDBhandeler.user!.email!) {
-                                          return Card(
-                                            color: klightbackgoundcolor,
-                                            elevation: 0,
-                                            child: Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: size.width * 0.1,
-                                                  right: size.width * 0.05),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                        color: kprimaryColor,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(28)),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              10),
-                                                      child: Text(
-                                                        msgList[indext].message,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        maxLines: 100,
-                                                        style: TextStyle(
-                                                          color:
-                                                              kdefualtfontcolor,
-                                                          fontSize:
-                                                              size.width * 0.04,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                      height:
-                                                          size.height * 0.005),
-                                                  Text(
-                                                    msgList[indext].datetime,
-                                                    style: TextStyle(
-                                                      color: kdefualtfontcolor
-                                                          .withOpacity(0.75),
-                                                      fontSize:
-                                                          size.width * 0.025,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
+                                          return SingelMsg(
+                                            mcolor: kprimaryColor,
+                                            msgModel: msgList[indext],
+                                            align: CrossAxisAlignment.end,
                                           );
                                         } else {
-                                          return Card(
-                                            color: klightbackgoundcolor,
-                                            elevation: 0,
-                                            child: Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: size.width * 0.05,
-                                                  right: size.width * 0.1),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                        color:
-                                                            kprimaryColordark,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(28)),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              10),
-                                                      child: Text(
-                                                        msgList[indext].message,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        maxLines: 100,
-                                                        style: TextStyle(
-                                                          color:
-                                                              kdefualtfontcolor
-                                                                  .withOpacity(
-                                                                      0.9),
-                                                          fontSize:
-                                                              size.width * 0.04,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                      height:
-                                                          size.height * 0.005),
-                                                  Text(
-                                                    msgList[indext].datetime,
-                                                    style: TextStyle(
-                                                      color: kdefualtfontcolor
-                                                          .withOpacity(0.75),
-                                                      fontSize:
-                                                          size.width * 0.025,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
+                                          return SingelMsg(
+                                            mcolor: kprimaryColordark,
+                                            msgModel: msgList[indext],
+                                            align: CrossAxisAlignment.start,
                                           );
                                         }
                                       });

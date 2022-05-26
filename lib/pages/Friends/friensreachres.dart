@@ -6,7 +6,7 @@ import 'package:securemsg/constants_data/ui_constants.dart';
 import 'package:securemsg/service/firebase_handeler/firedatabasehadeler.dart';
 import 'package:securemsg/service/firebase_handeler/user_handeler.dart';
 import 'package:securemsg/service/validater/date.dart';
-import 'package:securemsg/test/test1.dart';
+import 'package:securemsg/models/FrqModel.dart';
 import 'package:securemsg/ui_components/tots.dart';
 
 class FirendSearchRes extends StatefulWidget {

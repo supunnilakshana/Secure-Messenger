@@ -6,7 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:securemsg/constants_data/ui_constants.dart';
 import 'package:securemsg/pages/Chat/components/singel_chat.dart';
 import 'package:securemsg/service/firebase_handeler/firedatabasehadeler.dart';
-import 'package:securemsg/test/test1.dart';
+import 'package:securemsg/models/FrqModel.dart';
 import 'package:securemsg/ui_components/tots.dart';
 
 class ChatList extends StatefulWidget {

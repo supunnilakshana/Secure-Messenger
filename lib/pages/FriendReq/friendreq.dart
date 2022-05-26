@@ -5,7 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:securemsg/constants_data/ui_constants.dart';
 import 'package:securemsg/service/firebase_handeler/firedatabasehadeler.dart';
 import 'package:securemsg/service/validater/date.dart';
-import 'package:securemsg/test/test1.dart';
+import 'package:securemsg/models/FrqModel.dart';
 import 'package:securemsg/ui_components/tots.dart';
 
 class FriendReqlist extends StatefulWidget {
@@ -98,7 +98,7 @@ class _FriendReqlistState extends State<FriendReqlist> {
                                         int res =
                                             await FireDBhandeler.addFriendRq(
                                                 FrqModel(
-                                                    status: 1,
+                                                    status: 0,
                                                     id: data[indext].id,
                                                     email: data[indext].email,
                                                     name: data[indext].name,

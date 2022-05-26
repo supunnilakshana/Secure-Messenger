@@ -10,15 +10,10 @@ class Keymodel {
       required this.addeddate,
       required this.extesion});
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'key': key,
-      'addeddate': addeddate,
-      ' extesion': extesion
-    };
+    return {'id': id, 'key': key, 'addeddate': addeddate, 'extesion': extesion};
   }
 
-  factory Keymodel.fromMap(Map<String, dynamic> res) {
+  factory Keymodel.fromMap(Map<dynamic, dynamic> res) {
     return Keymodel(
       id: res['id'],
       key: res['key'],
