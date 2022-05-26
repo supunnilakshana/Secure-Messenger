@@ -40,78 +40,91 @@ class _FriendlistState extends State<Friendlist> {
                 print(data);
 
                 if (data.isNotEmpty) {
-                  return Container(
-                      child: ListView.builder(
-                          itemCount: data.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, indext) {
-                            print(data[indext].name);
-                            return Card(
-                              color: kprimaryColordark,
-                              child: ListTile(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 20.0, vertical: 10.0),
-                                  leading: Container(
-                                      child: Container(
-                                          child: Image.asset(
-                                              "assets/icons/accountdark.png")
-                                          // child: Image.network(
-                                          //   fiximagelink + data[indext].imgname,
-                                          //   width: size.width * 0.175,
-                                          // ),
-                                          )),
-                                  title: Text(
-                                    data[indext].name,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: kdefualtfontcolor,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: size.width * 0.037),
-                                  ),
-                                  subtitle: Row(children: [
-                                    Icon(Icons.email_outlined),
-                                    Expanded(
-                                      child: Text(" " + data[indext].email,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: kdefualtfontcolor
-                                                  .withOpacity(0.7))),
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                        child: ListView.builder(
+                            itemCount: data.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, indext) {
+                              String titel;
+                              if (data[indext].name == "") {
+                                titel = data[indext].email;
+                              } else {
+                                titel = data[indext].name;
+                              }
+                              print(data[indext].name);
+                              return Card(
+                                color: kprimaryColordark,
+                                child: ListTile(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 20.0, vertical: 10.0),
+                                    leading: Container(
+                                        child: Container(
+                                            child: Image.asset(
+                                                "assets/icons/accountdark.png")
+                                            // child: Image.network(
+                                            //   fiximagelink + data[indext].imgname,
+                                            //   width: size.width * 0.175,
+                                            // ),
+                                            )),
+                                    title: Text(
+                                      data[indext].name,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: kdefualtfontcolor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: size.width * 0.037),
                                     ),
-                                  ]),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        onPressed: () async {
-                                          // reloaddata();
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SingelChatScreen(
-                                                        rid: data[indext].id,
-                                                        email:
-                                                            data[indext].email,
-                                                      )));
-                                          print(data[indext].id);
-                                        },
-                                        icon: Icon(Icons.message_rounded),
-                                        color:
-                                            kdefualtfontcolor.withOpacity(0.8),
-                                        iconSize: size.width * 0.08,
+                                    subtitle: Row(children: [
+                                      Icon(Icons.email_outlined),
+                                      Expanded(
+                                        child: Text(data[indext].email,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            softWrap: false,
+                                            style: TextStyle(
+                                                color: kdefualtfontcolor
+                                                    .withOpacity(0.7))),
                                       ),
-                                      // IconButton(
-                                      //   onPressed: () async {
-                                      //     reloaddata();
-                                      //   },
-                                      //   icon: Icon(Icons.close),
-                                      //   color: Colors.black.withOpacity(0.5),
-                                      //   iconSize: size.width * 0.07,
-                                      // )
-                                    ],
-                                  )),
-                            );
-                          }));
+                                    ]),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          onPressed: () async {
+                                            // reloaddata();
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        SingelChatScreen(
+                                                          rid: data[indext].id,
+                                                          email: data[indext]
+                                                              .email,
+                                                          name:
+                                                              data[indext].name,
+                                                        )));
+                                            print(data[indext].id);
+                                          },
+                                          icon: Icon(Icons.message_rounded),
+                                          color: kdefualtfontcolor
+                                              .withOpacity(0.8),
+                                          iconSize: size.width * 0.08,
+                                        ),
+                                        // IconButton(
+                                        //   onPressed: () async {
+                                        //     reloaddata();
+                                        //   },
+                                        //   icon: Icon(Icons.close),
+                                        //   color: Colors.black.withOpacity(0.5),
+                                        //   iconSize: size.width * 0.07,
+                                        // )
+                                      ],
+                                    )),
+                              );
+                            })),
+                  );
                 } else {
                   return Container(
                     width: size.width,

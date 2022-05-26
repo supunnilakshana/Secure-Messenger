@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:securemsg/models/keymodel.dart';
 import 'package:securemsg/models/msgModel.dart';
 import 'package:securemsg/models/videomodel.dart';
@@ -18,7 +19,7 @@ class FireDBhandeler {
   static final String rqinboxpath = "rqinbox";
   static final String rqsentpath = "rqsentbox";
   static final String firendboxtpath = "friendbox";
-  static final String inkeyboxpath = "inkeybox";
+  static final String keyboxpath = "keybox";
   static final String sentkeyboxpath = "sentkeybox";
   static final String chatboxpath = "chatbox";
 
@@ -90,7 +91,7 @@ class FireDBhandeler {
     }
     //friend
     final senduser = FrqModel(
-        id: gmodel.id,
+        id: user!.uid,
         email: user!.email!,
         name: user!.displayName!,
         datetime: gmodel.datetime);
@@ -209,6 +210,17 @@ class FireDBhandeler {
     // Count of Documents in Collection
   }
 
+  //  static Future updatechatstatus() async {
+  //   var firebaseUser = FirebaseAuth.instance.currentUser;
+  //   int count = await userusercount();
+  //   await firestoreInstance
+  //       .collection("users")
+  //       .doc("userlist")
+  //       .update({"users": count + 1}).then((_) {
+  //     print("success!");
+  //   });
+  // }
+
   static updateDocCountRealtime(String key, int value) async {
     await dbRef.update({
       key: value,
@@ -216,8 +228,8 @@ class FireDBhandeler {
   }
 
 //realtimedb
-  static Future<int> checkfiledstatus(String collectionpath, String id) async {
-    final snapshot = await dbRef.child('$collectionpath/$id').get();
+  static Future<int> checkfiledstatus(String collectionpath) async {
+    final snapshot = await dbRef.child('$collectionpath').get();
     if (snapshot.exists) {
       return 0;
     } else {
@@ -230,6 +242,7 @@ class FireDBhandeler {
     int res = 0;
     try {
       DatabaseReference ref;
+
       //sender
       ref = FirebaseDatabase.instance.ref("users/" +
           user!.uid +
@@ -252,6 +265,41 @@ class FireDBhandeler {
           msgModel.id);
 
       await ref.set(msgModel.toMap());
+      print("addedreceverm");
+      res = 1;
+    } on Exception catch (e) {
+      print(e);
+    }
+    return res;
+  }
+
+  static Future<int> sendKey(MsgModel msgModel, Keymodel keymodel) async {
+    int res = 0;
+    try {
+      DatabaseReference ref;
+
+      //sender
+      ref = FirebaseDatabase.instance.ref("users/" +
+          user!.uid +
+          "/" +
+          keyboxpath +
+          "/" +
+          msgModel.reciveid +
+          "/" +
+          msgModel.id);
+//reciver
+      await ref.set(keymodel.toMap());
+      print("addedsenserm");
+      ref = FirebaseDatabase.instance.ref("users/" +
+          msgModel.reciveid +
+          "/" +
+          keyboxpath +
+          "/" +
+          msgModel.sendid +
+          "/" +
+          msgModel.id);
+
+      await ref.set(keymodel.toMap());
       print("addedreceverm");
       res = 1;
     } on Exception catch (e) {

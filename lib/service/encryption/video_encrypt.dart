@@ -24,25 +24,6 @@ class Cryptovideo {
   }
 
 //encrypt
-  EncryptedItem ecryptText(String text) {
-    KeyItem keyItem = _keyStore.genarateKeyitem();
-
-    String keytext = keyItem.key;
-    print(keytext);
-    final key = Key.fromUtf8(keytext);
-    final iv = IV.fromLength(16);
-    // print(iv.base64);
-
-    final encrypter = Encrypter(AES(key));
-
-    final encrypted = encrypter.encrypt(text, iv: iv);
-
-    print(encrypted.base64);
-
-    String encryptedText = encrypted.base64;
-
-    return EncryptedItem(video: File(encryptedText), key: keytext); //wrong
-  }
 
   Future<EncryptedItem> encryptFile(File video) async {
     String dir = (await getApplicationDocumentsDirectory()).path;
