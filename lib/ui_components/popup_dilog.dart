@@ -1,10 +1,11 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:securemsg/constants_data/ui_constants.dart';
 
 class PopupDialog {
   static showPopupDilog(BuildContext context, Function actionFun, String titel,
-      String description) {
+      String description, String okbtext) {
     AwesomeDialog(
       aligment: Alignment.center,
       context: context,
@@ -12,8 +13,8 @@ class PopupDialog {
       animType: AnimType.BOTTOMSLIDE,
       title: titel,
       desc: description,
-      btnCancelText: "No ",
-      btnOkText: "Yes",
+      btnCancelText: "Cancel",
+      btnOkText: okbtext,
       btnCancelOnPress: () {},
       btnOkOnPress: actionFun,
     )..show();
@@ -40,7 +41,7 @@ class PopupDialog {
   }
 
   static showPopupwarning(BuildContext context, String titel,
-      String description, Function() fun, String okbuttonlable, Size size) {
+      String description, Function fun, String okbuttonlable, Size size) {
     Alert(
       context: context,
       type: AlertType.warning,
@@ -53,7 +54,9 @@ class PopupDialog {
             okbuttonlable,
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
-          onPressed: fun,
+          onPressed: () {
+            fun();
+          },
           width: size.width * 0.1,
         ),
         DialogButton(
@@ -90,6 +93,46 @@ class PopupDialog {
         )
       ],
     ).show();
+  }
+
+  static showPopupdelete(
+      BuildContext context, String titel, Function actionFun) {
+    AwesomeDialog(
+        body: Text(
+          titel,
+          style: TextStyle(color: kdefualtfontcolor),
+        ),
+        context: context,
+        dialogType: DialogType.WARNING,
+        animType: AnimType.BOTTOMSLIDE,
+        btnCancelText: "No",
+        btnOkText: "Yes",
+        btnOkColor: Colors.redAccent,
+        btnCancelColor: Colors.blueGrey,
+        btnCancelOnPress: () {},
+        btnOkOnPress: actionFun,
+        dialogBackgroundColor: kprimaryColordark)
+      ..show();
+  }
+
+  static showPopupUnfirend(BuildContext context, String titel, String btnoktext,
+      Function actionFun) {
+    AwesomeDialog(
+        body: Text(
+          titel,
+          style: TextStyle(color: kdefualtfontcolor),
+        ),
+        context: context,
+        dialogType: DialogType.WARNING,
+        animType: AnimType.BOTTOMSLIDE,
+        btnCancelText: "No",
+        btnOkText: btnoktext,
+        btnOkColor: Colors.redAccent,
+        btnCancelColor: Colors.blueGrey,
+        btnCancelOnPress: () {},
+        btnOkOnPress: actionFun,
+        dialogBackgroundColor: kprimaryColordark)
+      ..show();
   }
 }
 

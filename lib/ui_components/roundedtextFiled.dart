@@ -80,6 +80,8 @@ class _RoundedInputWithControllState extends State<RoundedInputWithControll> {
   Widget build(BuildContext context) {
     return Textfiledcontainer(
       child: TextFormField(
+        maxLength: null,
+        maxLines: null,
         enabled: widget.isenabel,
         controller: widget.controller,
         // onChanged: onChange,

@@ -171,7 +171,7 @@ class _FriendReqlistState extends State<FriendReqlist> {
             // By default show a loading spinner.
             return Center(
                 child: Lottie.asset("assets/animation/loadingwhitec.json",
-                    width: size.height * 0.12));
+                    width: size.height * 0.08));
           },
         ),
       ),

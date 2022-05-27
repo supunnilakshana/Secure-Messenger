@@ -17,6 +17,7 @@ class FireDBhandeler {
 
   static final user = FirebaseAuth.instance.currentUser;
   static String mainUserpath = "/users/" + user!.email.toString() + "/";
+  static String mainUserpathRdb = "/users/" + user!.uid + "/";
   static final String rqinboxpath = "rqinbox";
   static final String rqsentpath = "rqsentbox";
   static final String firendboxtpath = "friendbox";
@@ -45,6 +46,7 @@ class FireDBhandeler {
   static Future<int> sendFriendRq(FrqModel gmodel, String email) async {
     String senduserpath = "/users/" + email + "/" + rqinboxpath;
     int status = await checkdocstatus(senduserpath, gmodel.email);
+    status = 1;
     if (status == 1) {
       firestoreInstance
           .collection(senduserpath)
@@ -61,6 +63,7 @@ class FireDBhandeler {
 
   static Future<int> saveFriendRq(FrqModel gmodel) async {
     int status = await checkdocstatus(mainUserpath + rqsentpath, gmodel.email);
+    status = 1;
     if (status == 1) {
       firestoreInstance
           .collection(mainUserpath + rqsentpath)
@@ -97,7 +100,7 @@ class FireDBhandeler {
         name: user!.displayName!,
         datetime: gmodel.datetime);
     status = await checkdocstatus(
-        "/users/" + gmodel.email + "/" + firendboxtpath, gmodel.email);
+        "/users/" + gmodel.email + "/" + firendboxtpath, senduser.email);
     if (status == 1) {
       firestoreInstance
           .collection("/users/" + gmodel.email + "/" + firendboxtpath)
@@ -349,6 +352,20 @@ class FireDBhandeler {
     int ishere = await checkdocstatus(collection, id);
     if (ishere == 0) {
       await firestoreInstance.collection(collection).doc(id).delete();
+    }
+    return ishere;
+  }
+
+  static Future<int> deletefiled(String path) async {
+    final DatabaseReference ref = FirebaseDatabase.instance.ref(path);
+
+    int ishere = await checkfiledstatus(path);
+    print(path);
+    print(ishere.toString() + "-----------------------------------");
+
+    if (ishere == 0) {
+      await ref.remove();
+      print("deleted");
     }
     return ishere;
   }

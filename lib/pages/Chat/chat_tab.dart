@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:securemsg/constants_data/ui_constants.dart';
+import 'package:securemsg/pages/Chat/components/addChatscreen.dart';
 import 'package:securemsg/pages/Chat/components/chatList.dart';
 import 'package:securemsg/service/firebase_handeler/firedatabasehadeler.dart';
 
@@ -23,6 +25,18 @@ class _ChatTabState extends State<ChatTab> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: klightbackgoundcolor,
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => AddChatScreen()));
+          },
+          label: Text(
+            "New Chat",
+            style: TextStyle(color: kdefualtfontcolor),
+          ),
+          icon: Icon(Icons.add_circle_outline, color: kdefualtfontcolor),
+          backgroundColor: kprimaryColor,
+        ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(

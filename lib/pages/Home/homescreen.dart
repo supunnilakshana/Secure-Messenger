@@ -11,6 +11,7 @@ import 'package:securemsg/pages/Friends/friend_tab.dart';
 
 import 'package:securemsg/pages/sign_in_up/signin.dart';
 import 'package:securemsg/service/auth/google/GoogleSignAuth.dart';
+import 'package:securemsg/service/local/localdb_handeler.dart';
 import 'package:securemsg/ui_components/popup_dilog.dart';
 
 import 'components/drawer.dart';
@@ -28,6 +29,7 @@ class _HomescreenState extends State<Homescreen> {
   final user = FirebaseAuth.instance.currentUser;
 
   int _selectedIndex = 0;
+  int fecurestatus = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
   DateTime pre_backpress = DateTime.now();
@@ -62,7 +64,7 @@ class _HomescreenState extends State<Homescreen> {
           shadowColor: klightbackgoundcolor,
           elevation: 0,
           leading: GestureDetector(
-              onTap: () {
+              onTap: () async {
                 _scaffoldKey.currentState!.openDrawer();
               },
               child: Icon(

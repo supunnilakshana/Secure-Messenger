@@ -6,6 +6,7 @@ import 'package:securemsg/constants_data/ui_constants.dart';
 import 'package:securemsg/pages/Chat/components/singel_chat.dart';
 import 'package:securemsg/service/firebase_handeler/firedatabasehadeler.dart';
 import 'package:securemsg/models/FrqModel.dart';
+import 'package:securemsg/ui_components/popup_dilog.dart';
 import 'package:securemsg/ui_components/tots.dart';
 
 class Friendlist extends StatefulWidget {
@@ -48,8 +49,10 @@ class _FriendlistState extends State<Friendlist> {
                             shrinkWrap: true,
                             itemBuilder: (context, indext) {
                               String titel;
+                              print(data[indext].name);
                               if (data[indext].name == "") {
-                                titel = data[indext].email;
+                                titel = data[indext].email.split('@').first;
+                                print(titel);
                               } else {
                                 titel = data[indext].name;
                               }
@@ -69,7 +72,7 @@ class _FriendlistState extends State<Friendlist> {
                                             // ),
                                             )),
                                     title: Text(
-                                      data[indext].name,
+                                      titel,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           color: kdefualtfontcolor,
@@ -93,6 +96,52 @@ class _FriendlistState extends State<Friendlist> {
                                       children: [
                                         IconButton(
                                           onPressed: () async {
+                                            PopupDialog.showPopupUnfirend(
+                                                context,
+                                                "Do you want to unfriend " +
+                                                    titel +
+                                                    " ?",
+                                                "Unfriend", () async {
+                                              int res1 = await FireDBhandeler
+                                                  .deletedoc(
+                                                      data[indext].email,
+                                                      FireDBhandeler
+                                                              .mainUserpath +
+                                                          FireDBhandeler
+                                                              .firendboxtpath);
+                                              int res2 = await FireDBhandeler
+                                                  .deletedoc(
+                                                      FireDBhandeler
+                                                          .user!.email!,
+                                                      "/users/" +
+                                                          data[indext].email +
+                                                          "/" +
+                                                          FireDBhandeler
+                                                              .firendboxtpath);
+
+                                              if (res1 == 0 && res2 == 0) {
+                                                Customtost.commontost(
+                                                    "Unfirended",
+                                                    Colors.deepPurpleAccent);
+                                                Navigator.of(context).pop();
+                                                reloaddata();
+                                              } else {
+                                                Navigator.of(context).pop();
+                                                Customtost.commontost(" failed",
+                                                    Colors.redAccent);
+                                              }
+                                            });
+                                          },
+                                          icon: Icon(
+                                            Icons.person_off_rounded,
+                                            color: kdefualtfontcolor
+                                                .withOpacity(0.8),
+                                          ),
+                                          color: Colors.black.withOpacity(0.5),
+                                          iconSize: size.width * 0.08,
+                                        ),
+                                        IconButton(
+                                          onPressed: () async {
                                             // reloaddata();
                                             Navigator.push(
                                                 context,
@@ -110,16 +159,8 @@ class _FriendlistState extends State<Friendlist> {
                                           icon: Icon(Icons.message_rounded),
                                           color: kdefualtfontcolor
                                               .withOpacity(0.8),
-                                          iconSize: size.width * 0.08,
+                                          iconSize: size.width * 0.06,
                                         ),
-                                        // IconButton(
-                                        //   onPressed: () async {
-                                        //     reloaddata();
-                                        //   },
-                                        //   icon: Icon(Icons.close),
-                                        //   color: Colors.black.withOpacity(0.5),
-                                        //   iconSize: size.width * 0.07,
-                                        // )
                                       ],
                                     )),
                               );
@@ -158,7 +199,7 @@ class _FriendlistState extends State<Friendlist> {
               // By default show a loading spinner.
               return Center(
                   child: Lottie.asset("assets/animation/loadingwhitec.json",
-                      width: size.height * 0.8));
+                      width: size.height * 0.08));
             },
           ),
         ],
