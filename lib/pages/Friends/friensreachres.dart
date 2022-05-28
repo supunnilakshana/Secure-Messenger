@@ -22,7 +22,7 @@ class FirendSearchRes extends StatefulWidget {
 
 class _FirendSearchResState extends State<FirendSearchRes> {
   late Future<List<String>> futureData;
-  bool ispressed = false;
+
   @override
   void initState() {
     super.initState();
@@ -46,88 +46,10 @@ class _FirendSearchResState extends State<FirendSearchRes> {
                   child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: data.length,
+                      physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (context, indext) {
-                        return Card(
-                          color: kprimaryColordark,
-                          child: ListTile(
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 10.0),
-                              leading: Container(
-                                  child: Container(
-                                      child: Image.asset(
-                                          "assets/icons/accountdark.png"))),
-                              title: Text(
-                                data[indext],
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    color: kdefualtfontcolor.withOpacity(0.95),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: size.width * 0.037),
-                              ),
-                              subtitle: Row(children: [
-                                Icon(Icons.person_pin),
-                                Expanded(
-                                  child: Text("Secure Messenger User",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: kdefualtfontcolor
-                                              .withOpacity(0.7))),
-                                ),
-                              ]),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    onPressed: ispressed
-                                        ? () {}
-                                        : () async {
-                                            ispressed = true;
-                                            setState(() {});
-                                            int res1 = await FireDBhandeler
-                                                .sendFriendRq(
-                                                    FrqModel(
-                                                        id: FireDBhandeler
-                                                            .user!.uid,
-                                                        email: FireDBhandeler
-                                                            .user!.email!,
-                                                        name: FireDBhandeler
-                                                            .user!.displayName!,
-                                                        datetime: Date
-                                                            .getDatetimenow()),
-                                                    data[indext]);
-                                            int res2 = await FireDBhandeler
-                                                .saveFriendRq(
-                                              FrqModel(
-                                                  id: FireDBhandeler.user!.uid,
-                                                  email: FireDBhandeler
-                                                      .user!.email!,
-                                                  name: FireDBhandeler
-                                                      .user!.displayName!,
-                                                  datetime:
-                                                      Date.getDatetimenow()),
-                                            );
-                                            if (res2 == 1 && res1 == 1) {
-                                              Customtost.commontost(
-                                                  "Request sent",
-                                                  Colors.indigoAccent);
-                                            } else {
-                                              Customtost.commontost(
-                                                  "Reques failed",
-                                                  Colors.redAccent);
-                                              ispressed = false;
-                                              setState(() {});
-                                            }
-
-                                            // reloaddata();
-                                          },
-                                    icon: Icon(ispressed
-                                        ? Icons.check_circle
-                                        : Icons.person_add),
-                                    color: kdefualtfontcolor.withOpacity(0.5),
-                                    iconSize: size.width * 0.07,
-                                  )
-                                ],
-                              )),
+                        return GlobelUserItem(
+                          data: data[indext],
                         );
                       }));
             } else {
@@ -174,3 +96,123 @@ class _FirendSearchResState extends State<FirendSearchRes> {
     });
   }
 }
+
+class GlobelUserItem extends StatefulWidget {
+  GlobelUserItem({
+    Key? key,
+    required this.data,
+  }) : super(key: key);
+
+  final String data;
+
+  @override
+  _GlobelUserItemState createState() => _GlobelUserItemState();
+}
+
+class _GlobelUserItemState extends State<GlobelUserItem> {
+  bool ispressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
+    return Card(
+      color: kprimaryColordark,
+      child: ListTile(
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          leading: Container(
+              child: Container(
+                  child: Image.asset("assets/icons/accountdark.png"))),
+          title: Text(
+            widget.data,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+                color: kdefualtfontcolor.withOpacity(0.95),
+                fontWeight: FontWeight.bold,
+                fontSize: size.width * 0.037),
+          ),
+          subtitle: Row(children: [
+            Icon(Icons.person_pin),
+            Expanded(
+              child: Text("Secure Messenger User",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: kdefualtfontcolor.withOpacity(0.7))),
+            ),
+          ]),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: ispressed
+                    ? () {}
+                    : () async {
+                        ispressed = true;
+                        setState(() {});
+
+                        int res = await FireDBhandeler.checkdocstatus(
+                            FireDBhandeler.mainUserpath +
+                                FireDBhandeler.firendboxtpath,
+                            widget.data);
+                        if (res == 1) {
+                          int res1 = await FireDBhandeler.sendFriendRq(
+                              FrqModel(
+                                  id: FireDBhandeler.user!.uid,
+                                  email: FireDBhandeler.user!.email!,
+                                  name: FireDBhandeler.user!.displayName!,
+                                  datetime: Date.getDatetimenow()),
+                              widget.data);
+                          int res2 = await FireDBhandeler.saveFriendRq(
+                            FrqModel(
+                                id: FireDBhandeler.user!.uid,
+                                email: FireDBhandeler.user!.email!,
+                                name: FireDBhandeler.user!.displayName!,
+                                datetime: Date.getDatetimenow()),
+                          );
+                          if (res2 == 1 && res1 == 1) {
+                            Customtost.commontost(
+                                "Request sent", Colors.indigoAccent);
+                          } else {
+                            Customtost.commontost(
+                                "Request failed", Colors.redAccent);
+                            ispressed = false;
+                            setState(() {});
+                          }
+                        } else {
+                          Customtost.commontost(
+                              widget.data + " is already friend",
+                              Colors.indigoAccent);
+                          ispressed = false;
+                          setState(() {});
+                        }
+                      },
+                icon: Icon(ispressed ? Icons.check_circle : Icons.person_add),
+                color: kdefualtfontcolor.withOpacity(0.5),
+                iconSize: size.width * 0.07,
+              )
+            ],
+          )),
+    );
+  }
+}
+
+// class Testwid extends StatefulWidget {
+//   final String data;
+//   final Function() reloaddata;
+
+//   const Testwid({Key? key, required this.data, required this.reloaddata})
+//       : super(key: key);
+
+//   @override
+//   _TestwidState createState() => _TestwidState();
+// }
+
+// class _TestwidState extends State<Testwid> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Card(
+//       color: kprimaryColordark,
+//       child: Text("----"),
+//     );
+//   }
+// }

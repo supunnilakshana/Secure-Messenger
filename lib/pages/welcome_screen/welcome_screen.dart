@@ -56,7 +56,7 @@ class StartState extends State<WelcomeScreen> {
         children: <Widget>[
           SizedBox(height: size.height * 0.35),
           Image.asset(
-            "assets/icons/welcomeicon.png",
+            "assets/icons/appicon.png",
             width: size.width * 0.6,
           ),
           Expanded(

@@ -123,10 +123,10 @@ class _FriendlistState extends State<Friendlist> {
                                                 Customtost.commontost(
                                                     "Unfirended",
                                                     Colors.deepPurpleAccent);
-                                                Navigator.of(context).pop();
+                                                // Navigator.of(context).pop();
                                                 reloaddata();
                                               } else {
-                                                Navigator.of(context).pop();
+                                                // Navigator.of(context).pop();
                                                 Customtost.commontost(" failed",
                                                     Colors.redAccent);
                                               }

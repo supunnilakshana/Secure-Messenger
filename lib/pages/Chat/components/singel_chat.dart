@@ -190,569 +190,520 @@ class _SingelChatScreenState extends State<SingelChatScreen> {
                       "assets/animation/floadingwhitec.json.json",
                       width: size.width * 0.1),
                 )
-              : Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: klightbackgoundcolor,
-                      ),
-                      height: size.height,
-                      width: size.width,
-                      child: Column(
-                        children: [
-                          Expanded(
-                              child: Container(
-                            child: FutureBuilder(
-                              future: futureData,
-                              builder: (context, snapshot1) {
-                                if (snapshot1.hasData) {
-                                  int data1 = snapshot1.data as int;
-                                  nochat = data1;
-                                  chatcreate = data1;
-                                  print(nochat);
-                                  if (nochat == 0) {
-                                    return StreamBuilder(
-                                      stream: FirebaseDatabase.instance
-                                          .ref("users/" +
-                                              FireDBhandeler.user!.uid +
-                                              "/" +
-                                              "chatbox" +
-                                              "/" +
-                                              widget.rid)
-                                          .onValue,
-                                      builder: (context, snapshot) {
-                                        print("users/" +
-                                            FireDBhandeler.user!.uid +
-                                            "/" +
-                                            "chatbox" +
-                                            "/" +
-                                            widget.rid);
-                                        List<MsgModel> msgList = [];
+              : Container(
+                  decoration: BoxDecoration(
+                    color: klightbackgoundcolor,
+                  ),
+                  height: size.height,
+                  width: size.width,
+                  child: Column(
+                    children: [
+                      Expanded(
+                          child: Container(
+                        child: FutureBuilder(
+                          future: futureData,
+                          builder: (context, snapshot1) {
+                            if (snapshot1.hasData) {
+                              int data1 = snapshot1.data as int;
+                              nochat = data1;
+                              chatcreate = data1;
+                              print(nochat);
+                              if (nochat == 0) {
+                                return StreamBuilder(
+                                  stream: FirebaseDatabase.instance
+                                      .ref("users/" +
+                                          FireDBhandeler.user!.uid +
+                                          "/" +
+                                          "chatbox" +
+                                          "/" +
+                                          widget.rid)
+                                      .onValue,
+                                  builder: (context, snapshot) {
+                                    print("users/" +
+                                        FireDBhandeler.user!.uid +
+                                        "/" +
+                                        "chatbox" +
+                                        "/" +
+                                        widget.rid);
+                                    List<MsgModel> msgList = [];
 
-                                        if (snapshot.hasData) {
-                                          // List<MsgModel> data =
-                                          //     snapshot.data as List<MsgModel>;
-                                          // print(data.length);
-                                          if (snapshot.data != null) {
-                                            print("object");
-                                            final myMessages = Map<dynamic,
-                                                dynamic>.from((snapshot.data!
-                                                        as DatabaseEvent)
+                                    if (snapshot.hasData) {
+                                      // List<MsgModel> data =
+                                      //     snapshot.data as List<MsgModel>;
+                                      // print(data.length);
+                                      if (snapshot.data != null) {
+                                        print("object");
+                                        final myMessages =
+                                            Map<dynamic, dynamic>.from((snapshot
+                                                        .data! as DatabaseEvent)
                                                     .snapshot
                                                     .value
                                                 as Map<dynamic, dynamic>);
 
-                                            // print(myMessages);
-                                            MsgModel mModel;
+                                        // print(myMessages);
+                                        MsgModel mModel;
 
-                                            myMessages.forEach((key, value) {
-                                              // msgList = [];
-                                              // print(value);
-                                              Map<dynamic, dynamic> map = value
-                                                  as Map<dynamic, dynamic>;
-                                              mModel = MsgModel.fromMap(map);
-                                              if (msgList.contains(mModel.id) ==
-                                                  false) {
-                                                msgList.add(mModel);
+                                        myMessages.forEach((key, value) {
+                                          // msgList = [];
+                                          // print(value);
+                                          Map<dynamic, dynamic> map =
+                                              value as Map<dynamic, dynamic>;
+                                          mModel = MsgModel.fromMap(map);
+                                          if (msgList.contains(mModel.id) ==
+                                              false) {
+                                            msgList.add(mModel);
+                                          }
+                                        });
+                                        msgList.sort((b, a) => b.datetimeid
+                                            .compareTo(a.datetimeid));
+                                      }
+                                      if (msgList.isNotEmpty) {
+                                        return ListView.builder(
+                                            controller: _scrollController,
+                                            // physics: ClampingScrollPhysics(),
+                                            // keyboardDismissBehavior:
+                                            //     ScrollViewKeyboardDismissBehavior
+                                            //         .onDrag,
+                                            itemCount: msgList.length,
+                                            itemBuilder: (context, indext) {
+                                              if (msgList[indext].sendemail ==
+                                                  FireDBhandeler.user!.email!) {
+                                                if (msgList[indext].msgtype ==
+                                                    "file") {
+                                                  String defilepath = "no--";
+                                                  return Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: size.height * 0.01,
+                                                        left: size.width * 0.25,
+                                                        right: 8),
+                                                    child: SingelFileItem(
+                                                        msgModel:
+                                                            msgList[indext],
+                                                        pcolor: kprimaryColor),
+                                                  );
+                                                } else if (msgList[indext]
+                                                        .msgtype ==
+                                                    "tmsg") {
+                                                  return SingelMsg(
+                                                    mcolor: kprimaryColor,
+                                                    msgModel: msgList[indext],
+                                                    align:
+                                                        CrossAxisAlignment.end,
+                                                  );
+                                                } else if (msgList[indext]
+                                                        .msgtype ==
+                                                    "img") {
+                                                  return SingelImgItem(
+                                                      align: CrossAxisAlignment
+                                                          .end,
+                                                      msgModel: msgList[indext],
+                                                      pcolor: kprimaryColor,
+                                                      pleft: size.width * 0.25,
+                                                      pright:
+                                                          size.width * 0.03);
+                                                } else {
+                                                  return Container();
+                                                }
+                                              } else {
+                                                if (msgList[indext].msgtype ==
+                                                    "file") {
+                                                  String defilepath = "";
+                                                  return Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: size.height * 0.01,
+                                                        left: 8,
+                                                        right:
+                                                            size.width * 0.25),
+                                                    child: SingelFileItem(
+                                                        msgModel:
+                                                            msgList[indext],
+                                                        pcolor:
+                                                            kprimaryColordark),
+                                                  );
+                                                } else if (msgList[indext]
+                                                        .msgtype ==
+                                                    "tmsg") {
+                                                  return SingelMsg(
+                                                    mcolor: kprimaryColordark,
+                                                    msgModel: msgList[indext],
+                                                    align: CrossAxisAlignment
+                                                        .start,
+                                                  );
+                                                } else if (msgList[indext]
+                                                        .msgtype ==
+                                                    "img") {
+                                                  return SingelImgItem(
+                                                      align: CrossAxisAlignment
+                                                          .start,
+                                                      msgModel: msgList[indext],
+                                                      pcolor: kprimaryColor,
+                                                      pleft: size.width * 0.03,
+                                                      pright:
+                                                          size.width * 0.25);
+                                                } else {
+                                                  return Container();
+                                                }
                                               }
                                             });
-                                            msgList.sort((b, a) => b.datetimeid
-                                                .compareTo(a.datetimeid));
-                                          }
-                                          if (msgList.isNotEmpty) {
-                                            return ListView.builder(
-                                                controller: _scrollController,
-                                                // physics: ClampingScrollPhysics(),
-                                                // keyboardDismissBehavior:
-                                                //     ScrollViewKeyboardDismissBehavior
-                                                //         .onDrag,
-                                                itemCount: msgList.length,
-                                                itemBuilder: (context, indext) {
-                                                  if (msgList[indext]
-                                                          .sendemail ==
-                                                      FireDBhandeler
-                                                          .user!.email!) {
-                                                    if (msgList[indext]
-                                                            .msgtype ==
-                                                        "file") {
-                                                      String defilepath =
-                                                          "no--";
-                                                      return Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: size.height *
-                                                                0.01,
-                                                            left: size.width *
-                                                                0.25,
-                                                            right: 8),
-                                                        child: SingelFileItem(
-                                                            msgModel:
-                                                                msgList[indext],
-                                                            pcolor:
-                                                                kprimaryColor),
-                                                      );
-                                                    } else if (msgList[indext]
-                                                            .msgtype ==
-                                                        "tmsg") {
-                                                      return SingelMsg(
-                                                        mcolor: kprimaryColor,
-                                                        msgModel:
-                                                            msgList[indext],
-                                                        align:
-                                                            CrossAxisAlignment
-                                                                .end,
-                                                      );
-                                                    } else if (msgList[indext]
-                                                            .msgtype ==
-                                                        "img") {
-                                                      return SingelImgItem(
-                                                          align:
-                                                              CrossAxisAlignment
-                                                                  .end,
-                                                          msgModel:
-                                                              msgList[indext],
-                                                          pcolor: kprimaryColor,
-                                                          pleft:
-                                                              size.width * 0.25,
-                                                          pright: size.width *
-                                                              0.03);
-                                                    } else {
-                                                      return Container();
-                                                    }
-                                                  } else {
-                                                    if (msgList[indext]
-                                                            .msgtype ==
-                                                        "file") {
-                                                      String defilepath = "";
-                                                      return Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: size.height *
-                                                                0.01,
-                                                            left: 8,
-                                                            right: size.width *
-                                                                0.25),
-                                                        child: SingelFileItem(
-                                                            msgModel:
-                                                                msgList[indext],
-                                                            pcolor:
-                                                                kprimaryColordark),
-                                                      );
-                                                    } else if (msgList[indext]
-                                                            .msgtype ==
-                                                        "tmsg") {
-                                                      return SingelMsg(
-                                                        mcolor:
-                                                            kprimaryColordark,
-                                                        msgModel:
-                                                            msgList[indext],
-                                                        align:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                      );
-                                                    } else if (msgList[indext]
-                                                            .msgtype ==
-                                                        "img") {
-                                                      return SingelImgItem(
-                                                          align:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          msgModel:
-                                                              msgList[indext],
-                                                          pcolor: kprimaryColor,
-                                                          pleft:
-                                                              size.width * 0.03,
-                                                          pright: size.width *
-                                                              0.25);
-                                                    } else {
-                                                      return Container();
-                                                    }
-                                                  }
-                                                });
-                                          } else {
-                                            return Center(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                  child:
-                                                      Text("Start a new chat"),
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                        } else if (snapshot.hasError) {
-                                          return Text("${snapshot.error}");
-                                        }
-                                        // By default show a loading spinner.
+                                      } else {
                                         return Center(
-                                            child: Lottie.asset(
-                                                "assets/animation/loadingwhitec.json",
-                                                width: size.height * 0.08));
-                                      },
-                                    );
-                                  } else {
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              child: Text("Start a new chat"),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    } else if (snapshot.hasError) {
+                                      return Text("${snapshot.error}");
+                                    }
+                                    // By default show a loading spinner.
                                     return Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          child: Text("Start a new chat"),
+                                        child: Lottie.asset(
+                                            "assets/animation/loadingwhitec.json",
+                                            width: size.height * 0.08));
+                                  },
+                                );
+                              } else {
+                                return Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      child: Text("Start a new chat"),
+                                    ),
+                                  ),
+                                );
+                              }
+                            } else if (snapshot1.hasError) {
+                              return Text("${snapshot1.error}");
+                            }
+                            // By default show a loading spinner.
+                            return Center(
+                                child: Lottie.asset(
+                                    "assets/animation/loadingwhitec.json",
+                                    width: size.height * 0.08));
+                          },
+                        ),
+                      )),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              isfileload
+                                  ? isimg
+                                      ? Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8, right: 8),
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        15.0)),
+                                            color: kprimaryColordark,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                children: [
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    child: isfilesending
+                                                        ? Lottie.asset(
+                                                            "assets/animation/filesuploading.json",
+                                                            width: size.width *
+                                                                0.1)
+                                                        : GestureDetector(
+                                                            onTap: () {
+                                                              isfileload =
+                                                                  false;
+                                                              isfilesending =
+                                                                  false;
+                                                              isimg = false;
+                                                              setState(() {});
+                                                            },
+                                                            child: Icon(
+                                                                Icons.close)),
+                                                  ),
+                                                  Container(
+                                                    height: size.height * 0.5,
+                                                    width: size.width * 0.7,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15.0),
+                                                    ),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15.0),
+                                                      child: Image.file(
+                                                        sendfile!,
+                                                        // height: size.height * 0.5,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            5.0),
+                                                    child: Text(fileName),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8, right: 8),
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        25.0)),
+                                            color: kprimaryColordark,
+                                            child: ListTile(
+                                              leading: Icon(
+                                                Icons.file_present_outlined,
+                                              ),
+                                              title: Text(fileName),
+                                              trailing: isfilesending
+                                                  ? Lottie.asset(
+                                                      "assets/animation/filesuploading.json",
+                                                      width: size.width * 0.1)
+                                                  : GestureDetector(
+                                                      onTap: () {
+                                                        isfileload = false;
+                                                        isfilesending = false;
+                                                        isimg = false;
+                                                        setState(() {});
+                                                      },
+                                                      child: Icon(Icons.close)),
+                                            ),
+                                          ),
+                                        )
+                                  : Container(),
+                              GestureDetector(
+                                onTap: () {
+                                  setscroll();
+                                },
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Flexible(
+                                      child: RoundedInputWithControll(
+                                          textinput: TextInputType.multiline,
+                                          controller: messegecon,
+                                          icon: Icons.chat_rounded,
+                                          onchange: (text) {
+                                            // message = text;
+                                            setscroll();
+                                          },
+                                          valid: (text) {
+                                            return null;
+                                          },
+                                          save: (text) {}),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: size.width * 0.01,
+                                          bottom: size.height * 0.015),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          _chooeseFile();
+                                        },
+                                        child: Icon(
+                                          Icons.attachment,
+                                          color: kdefualtfontcolor
+                                              .withOpacity(0.8),
+                                          size: size.width * 0.08,
                                         ),
                                       ),
-                                    );
-                                  }
-                                } else if (snapshot1.hasError) {
-                                  return Text("${snapshot1.error}");
-                                }
-                                // By default show a loading spinner.
-                                return Center(
-                                    child: Lottie.asset(
-                                        "assets/animation/loadingwhitec.json",
-                                        width: size.height * 0.08));
-                              },
-                            ),
-                          )),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  isfileload
-                                      ? isimg
-                                          ? Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8, right: 8),
-                                              child: Card(
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            15.0)),
-                                                color: kprimaryColordark,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    children: [
-                                                      Align(
-                                                        alignment:
-                                                            Alignment.topRight,
-                                                        child: isfilesending
-                                                            ? Lottie.asset(
-                                                                "assets/animation/filesuploading.json",
-                                                                width:
-                                                                    size.width *
-                                                                        0.1)
-                                                            : GestureDetector(
-                                                                onTap: () {
-                                                                  isfileload =
-                                                                      false;
-                                                                  isfilesending =
-                                                                      false;
-                                                                  isimg = false;
-                                                                  setState(
-                                                                      () {});
-                                                                },
-                                                                child: Icon(Icons
-                                                                    .close)),
-                                                      ),
-                                                      Container(
-                                                        // width: size.width * 0.6,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      15.0),
-                                                        ),
-                                                        child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      15.0),
-                                                          child: Image.file(
-                                                            sendfile!,
-                                                            // height: size.height * 0.5,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(5.0),
-                                                        child: Text(fileName),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          : Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8, right: 8),
-                                              child: Card(
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            25.0)),
-                                                color: kprimaryColordark,
-                                                child: ListTile(
-                                                  leading: Icon(
-                                                    Icons.file_present_outlined,
-                                                  ),
-                                                  title: Text(fileName),
-                                                  trailing: isfilesending
-                                                      ? Lottie.asset(
-                                                          "assets/animation/filesuploading.json",
-                                                          width:
-                                                              size.width * 0.1)
-                                                      : GestureDetector(
-                                                          onTap: () {
-                                                            isfileload = false;
-                                                            isfilesending =
-                                                                false;
-                                                            isimg = false;
-                                                            setState(() {});
-                                                          },
-                                                          child: Icon(
-                                                              Icons.close)),
-                                                ),
-                                              ),
-                                            )
-                                      : Container(),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setscroll();
-                                    },
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Flexible(
-                                          child: RoundedInputWithControll(
-                                              textinput:
-                                                  TextInputType.multiline,
-                                              controller: messegecon,
-                                              icon: Icons.chat_rounded,
-                                              onchange: (text) {
-                                                // message = text;
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: size.width * 0.01,
+                                          bottom: size.height * 0.015),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          _showPicker(context);
+                                        },
+                                        child: Icon(
+                                          Icons.camera_alt_outlined,
+                                          color: kdefualtfontcolor
+                                              .withOpacity(0.8),
+                                          size: size.width * 0.06,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: size.width * 0.01,
+                                          bottom: size.height * 0.02),
+                                      child: IconButton(
+                                        color: kprimaryColor.withOpacity(0.95),
+                                        icon: Icon(
+                                          Icons.send_rounded,
+                                          color:
+                                              kprimaryColor.withOpacity(0.95),
+                                          size: size.width * 0.1,
+                                        ),
+                                        onPressed: isfilesending
+                                            ? () {
                                                 setscroll();
-                                              },
-                                              valid: (text) {
-                                                return null;
-                                              },
-                                              save: (text) {}),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: size.width * 0.01,
-                                              bottom: size.height * 0.015),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              _chooeseFile();
-                                            },
-                                            child: Icon(
-                                              Icons.attachment,
-                                              color: kdefualtfontcolor
-                                                  .withOpacity(0.8),
-                                              size: size.width * 0.08,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: size.width * 0.01,
-                                              bottom: size.height * 0.015),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              _showPicker(context);
-                                            },
-                                            child: Icon(
-                                              Icons.camera_alt_outlined,
-                                              color: kdefualtfontcolor
-                                                  .withOpacity(0.8),
-                                              size: size.width * 0.06,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: size.width * 0.01,
-                                              bottom: size.height * 0.02),
-                                          child: IconButton(
-                                            color:
-                                                kprimaryColor.withOpacity(0.95),
-                                            icon: Icon(
-                                              Icons.send_rounded,
-                                              color: kprimaryColor
-                                                  .withOpacity(0.95),
-                                              size: size.width * 0.1,
-                                            ),
-                                            onPressed: isfilesending
-                                                ? () {
-                                                    setscroll();
-                                                    Customtost.commontost(
-                                                        "file sending..",
-                                                        kprimaryColor);
-                                                  }
-                                                : () async {
-                                                    setscroll();
-                                                    // print(msgList.length);
-                                                    print("pressed");
+                                                Customtost.commontost(
+                                                    "file sending..",
+                                                    kprimaryColor);
+                                              }
+                                            : () async {
+                                                setscroll();
+                                                // print(msgList.length);
+                                                print("pressed");
 
-                                                    if (isfileload) {
-                                                      setState(() {
-                                                        isfilesending = true;
-                                                      });
-                                                      print("press");
-                                                      EncryptedItem enitem =
-                                                          await CryptoEncrpt
-                                                              .encryptFile(
-                                                                  sendfile!);
-                                                      final extensionEn =
-                                                          p.extension(
-                                                              enitem.file.path);
+                                                if (isfileload) {
+                                                  setState(() {
+                                                    isfilesending = true;
+                                                  });
+                                                  print("press");
+                                                  EncryptedItem enitem =
+                                                      await CryptoEncrpt
+                                                          .encryptFile(
+                                                              sendfile!);
+                                                  final extensionEn =
+                                                      p.extension(
+                                                          enitem.file.path);
 
-                                                      print(extensionEn);
-                                                      String id = FireDBhandeler
-                                                              .user!.uid +
+                                                  print(extensionEn);
+                                                  String id =
+                                                      FireDBhandeler.user!.uid +
                                                           Date.getDateTimeId();
-                                                      String vlink =
-                                                          await FileUploader
-                                                              .uploadData(
-                                                                  enitem.file,
-                                                                  id +
-                                                                      extensionEn);
-                                                      print(vlink);
+                                                  String vlink =
+                                                      await FileUploader
+                                                          .uploadData(
+                                                              enitem.file,
+                                                              id + extensionEn);
+                                                  print(vlink);
 
-                                                      if (vlink != "false") {
-                                                        Keymodel keymodel = Keymodel(
-                                                            id: id,
-                                                            key: enitem.key,
-                                                            addeddate: Date
-                                                                .getDatetimenow(),
-                                                            extesion:
-                                                                fileExtesnsion);
+                                                  if (vlink != "false") {
+                                                    Keymodel keymodel = Keymodel(
+                                                        id: id,
+                                                        key: enitem.key,
+                                                        addeddate: Date
+                                                            .getDatetimenow(),
+                                                        extesion:
+                                                            fileExtesnsion);
 
-                                                        MsgModel modelM = MsgModel(
-                                                            fname: fileName,
-                                                            id: id,
-                                                            sendemail:
-                                                                FireDBhandeler
-                                                                    .user!
-                                                                    .email!,
-                                                            reciveemail:
-                                                                widget.email,
-                                                            message: vlink,
-                                                            msgtype: mesgtype,
-                                                            datetime: Date
-                                                                .getDatetimenow(),
-                                                            datetimeid: Date
-                                                                .getDateTimeId(),
-                                                            sendid:
-                                                                FireDBhandeler
-                                                                    .user!.uid,
-                                                            reciveid:
-                                                                widget.rid);
-                                                        int res1 =
-                                                            await FireDBhandeler
-                                                                .sendKey(modelM,
-                                                                    keymodel);
-                                                        int res2 =
-                                                            await FireDBhandeler
-                                                                .sendMsgs(
-                                                                    modelM);
-                                                        if (res2 == 1 &&
-                                                            res2 == 1) {
-                                                          isfileload = false;
-                                                          isfilesending = false;
-                                                          isimg = false;
-                                                          setState(() {});
-                                                          loaddata();
-                                                          setscroll();
-                                                        } else {
-                                                          setState(() {
-                                                            isfilesending =
-                                                                false;
-                                                          });
-                                                          Customtost.commontost(
-                                                              "Sending failed",
-                                                              Colors.redAccent);
-                                                        }
-                                                      } else {
-                                                        setState(() {
-                                                          isfilesending = false;
-                                                        });
-                                                        Customtost.commontost(
-                                                            "Sending failed",
-                                                            Colors.redAccent);
-                                                      }
-                                                    } else {
-                                                      if (messegecon
-                                                          .text.isNotEmpty) {
-                                                        final id = FireDBhandeler
-                                                                .user!.uid +
-                                                            Date.getDateTimeId();
-                                                        EnText enText =
-                                                            CryptoEncrpt
-                                                                .ecryptText(
-                                                                    messegecon
-                                                                        .text);
-                                                        Keymodel keymodel =
-                                                            Keymodel(
-                                                                id: id,
-                                                                key: enText.key,
-                                                                addeddate: Date
-                                                                    .getDatetimenow(),
-                                                                extesion:
-                                                                    "tmsg");
-
-                                                        MsgModel modelM = MsgModel(
-                                                            id: id,
-                                                            sendemail:
-                                                                FireDBhandeler
-                                                                    .user!
-                                                                    .email!,
-                                                            reciveemail:
-                                                                widget.email,
-                                                            message: enText.msg,
-                                                            msgtype: "tmsg",
-                                                            datetime: Date
-                                                                .getDatetimenow(),
-                                                            datetimeid: Date
-                                                                .getDateTimeId(),
-                                                            sendid:
-                                                                FireDBhandeler
-                                                                    .user!.uid,
-                                                            reciveid:
-                                                                widget.rid);
+                                                    MsgModel modelM = MsgModel(
+                                                        fname: fileName,
+                                                        id: id,
+                                                        sendemail:
+                                                            FireDBhandeler
+                                                                .user!.email!,
+                                                        reciveemail:
+                                                            widget.email,
+                                                        message: vlink,
+                                                        msgtype: mesgtype,
+                                                        datetime: Date
+                                                            .getDatetimenow(),
+                                                        datetimeid: Date
+                                                            .getDateTimeId(),
+                                                        sendid: FireDBhandeler
+                                                            .user!.uid,
+                                                        reciveid: widget.rid);
+                                                    int res1 =
                                                         await FireDBhandeler
                                                             .sendKey(modelM,
                                                                 keymodel);
+                                                    int res2 =
                                                         await FireDBhandeler
                                                             .sendMsgs(modelM);
-                                                        print("done");
-                                                        nochat = 1;
-                                                        setState(() {});
-                                                        messegecon.clear();
-                                                        loaddata();
-                                                        setscroll();
-                                                      }
+                                                    if (res2 == 1 &&
+                                                        res2 == 1) {
+                                                      isfileload = false;
+                                                      isfilesending = false;
+                                                      isimg = false;
+                                                      setState(() {});
+                                                      loaddata();
+                                                      setscroll();
+                                                    } else {
+                                                      setState(() {
+                                                        isfilesending = false;
+                                                      });
+                                                      Customtost.commontost(
+                                                          "Sending failed",
+                                                          Colors.redAccent);
                                                     }
-                                                    if (_formKey.currentState!
-                                                        .validate()) {}
-                                                  },
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                                  } else {
+                                                    setState(() {
+                                                      isfilesending = false;
+                                                    });
+                                                    Customtost.commontost(
+                                                        "Sending failed",
+                                                        Colors.redAccent);
+                                                  }
+                                                } else {
+                                                  if (messegecon
+                                                      .text.isNotEmpty) {
+                                                    final id = FireDBhandeler
+                                                            .user!.uid +
+                                                        Date.getDateTimeId();
+                                                    EnText enText =
+                                                        CryptoEncrpt.ecryptText(
+                                                            messegecon.text);
+                                                    Keymodel keymodel = Keymodel(
+                                                        id: id,
+                                                        key: enText.key,
+                                                        addeddate: Date
+                                                            .getDatetimenow(),
+                                                        extesion: "tmsg");
+
+                                                    MsgModel modelM = MsgModel(
+                                                        id: id,
+                                                        sendemail:
+                                                            FireDBhandeler
+                                                                .user!.email!,
+                                                        reciveemail:
+                                                            widget.email,
+                                                        message: enText.msg,
+                                                        msgtype: "tmsg",
+                                                        datetime: Date
+                                                            .getDatetimenow(),
+                                                        datetimeid: Date
+                                                            .getDateTimeId(),
+                                                        sendid: FireDBhandeler
+                                                            .user!.uid,
+                                                        reciveid: widget.rid);
+                                                    await FireDBhandeler
+                                                        .sendKey(
+                                                            modelM, keymodel);
+                                                    await FireDBhandeler
+                                                        .sendMsgs(modelM);
+                                                    print("done");
+                                                    nochat = 1;
+                                                    setState(() {});
+                                                    messegecon.clear();
+                                                    loaddata();
+                                                    setscroll();
+                                                  }
+                                                }
+                                                if (_formKey.currentState!
+                                                    .validate()) {}
+                                              },
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
         ),
       ),

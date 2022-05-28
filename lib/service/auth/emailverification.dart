@@ -28,7 +28,7 @@ class Emailverification {
               ]
             }
           ],
-          "from": {"email": "supusdinithi@gmail.com"},
+          "from": {"email": "supunnilakshana@gmail.com"},
           "subject": "Secure Video Verification Code",
           "content": [
             {"type": "text/plain", "value": "Your verification code is" + code}
